@@ -24,3 +24,19 @@ function operate(a, b, sign) {
 }
 
 let a, b, sign;
+
+const display = document.querySelector('.display')
+display.textContent = 0
+const digits = document.querySelector('.digits')
+
+
+for (let i = 0; i <= 9; i++) {
+    const digit = document.createElement('button')
+    digit.setAttribute('id', i)
+    digit.textContent = i
+    digits.appendChild(digit)
+    digit.addEventListener('click', () => {
+        if (display.textContent === '0') {display.textContent = i}
+        else {display.textContent += i}
+    })
+}
