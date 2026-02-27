@@ -23,12 +23,36 @@ function operate(a, b, sign) {
     }
 }
 
-let a, b, sign;
+function clickSign(clickedSign) {
+    if (isNaN(savedNumber)) {
+        savedNumber = currentNumber
+        currentNumber = NaN
+    } else if (!isNaN(currentNumber)) {
+        if (currentSign === '/' && currentNumber === 0) {
+            display.textContent = 'Error: division by zero is not possible!'
+            currentNumber = NaN, savedNumber = NaN, currentSign = '';
+        } else {
+        result = operate(savedNumber, currentNumber, currentSign)
+        savedNumber = result
+        currentNumber = NaN
+        display.textContent = result 
+        }
+    }
+    currentSign = clickedSign
+}
+
+let currentNumber = NaN, savedNumber = NaN, currentSign;
 
 const display = document.querySelector('.display')
-display.textContent = 0
 const digits = document.querySelector('.digits')
+const addBtn = document.getElementById("+")
+const subtractBtn = document.getElementById("-")
+const multiplyBtn = document.getElementById("*")
+const divideBtn = document.getElementById("/")
+const equalBtn = document.getElementById("=")
+const clearBtn = document.getElementById("clear")
 
+display.textContent = 0
 
 for (let i = 0; i <= 9; i++) {
     const digit = document.createElement('button')
@@ -36,7 +60,35 @@ for (let i = 0; i <= 9; i++) {
     digit.textContent = i
     digits.appendChild(digit)
     digit.addEventListener('click', () => {
-        if (display.textContent === '0') {display.textContent = i}
-        else {display.textContent += i}
+        if (display.textContent === '0' || display.textContent != currentNumber) {
+            display.textContent = i
+            currentNumber = +display.textContent
+        }
+        else {
+            display.textContent += i
+            currentNumber = +display.textContent
+        }
     })
 }
+
+addBtn.addEventListener('click', e => clickSign('+'))
+subtractBtn.addEventListener('click', e => clickSign('-'))
+multiplyBtn.addEventListener('click', e => clickSign('*'))
+divideBtn.addEventListener('click', e => clickSign('/'))
+
+equalBtn.addEventListener('click', () => {
+    if (currentSign === '/' && currentNumber === 0) {
+        display.textContent = 'Error: division by zero is not possible!'
+        currentNumber = NaN, savedNumber = NaN, currentSign = '';
+    }else if (!isNaN(currentNumber) && !isNaN(savedNumber)) {
+        result = operate(savedNumber, currentNumber, currentSign)
+        savedNumber = result
+        currentNumber = NaN
+        display.textContent = result
+    }
+})
+
+clearBtn.addEventListener('click', () => {
+    currentNumber = NaN, savedNumber = NaN, currentSign = '';
+    display.textContent = 0
+})
