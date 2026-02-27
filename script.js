@@ -51,6 +51,7 @@ const multiplyBtn = document.getElementById("*")
 const divideBtn = document.getElementById("/")
 const equalBtn = document.getElementById("=")
 const clearBtn = document.getElementById("clear")
+const point = document.getElementById("point")
 
 display.textContent = 0
 
@@ -63,6 +64,9 @@ for (let i = 0; i <= 9; i++) {
         if (display.textContent === '0' || display.textContent != currentNumber) {
             display.textContent = i
             currentNumber = +display.textContent
+            if (currentSign === '=') {
+                savedNumber = NaN
+            }
         }
         else {
             display.textContent += i
@@ -84,6 +88,7 @@ equalBtn.addEventListener('click', () => {
         result = operate(savedNumber, currentNumber, currentSign)
         savedNumber = result
         currentNumber = NaN
+        currentSign = '='
         display.textContent = result
     }
 })
@@ -91,4 +96,16 @@ equalBtn.addEventListener('click', () => {
 clearBtn.addEventListener('click', () => {
     currentNumber = NaN, savedNumber = NaN, currentSign = '';
     display.textContent = 0
+})
+
+point.addEventListener('click', () => {
+    if (display.textContent != currentNumber) {
+        display.textContent = '0.'
+        currentNumber = +display.textContent
+    }
+    else if (!display.textContent.includes('.')) {
+        display.textContent += '.'
+        currentNumber = +display.textContent
+    }
+    
 })
