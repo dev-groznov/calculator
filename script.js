@@ -33,15 +33,17 @@ function clickSign(clickedSign) {
             currentNumber = NaN, savedNumber = NaN, currentSign = '';
         } else {
         result = operate(savedNumber, currentNumber, currentSign)
+        history.push({num1: savedNumber, sign: currentSign, num2: currentNumber, result: result})
         savedNumber = result
         currentNumber = NaN
-        display.textContent = result 
+        display.textContent = result
         }
     }
     currentSign = clickedSign
 }
 
 let currentNumber = NaN, savedNumber = NaN, currentSign;
+const history = [{num1: NaN, sign: currentSign, num2: NaN, result: 0}]
 
 const display = document.querySelector('.display')
 const digits = document.querySelector('.digits')
@@ -52,6 +54,7 @@ const divideBtn = document.getElementById("/")
 const equalBtn = document.getElementById("=")
 const clearBtn = document.getElementById("clear")
 const point = document.getElementById("point")
+const back = document.getElementById("back")
 
 display.textContent = 0
 
@@ -86,9 +89,16 @@ equalBtn.addEventListener('click', () => {
         currentNumber = NaN, savedNumber = NaN, currentSign = '';
     }else if (!isNaN(currentNumber) && !isNaN(savedNumber)) {
         result = operate(savedNumber, currentNumber, currentSign)
-        savedNumber = result
+        history.push({num1: savedNumber, sign: currentSign, num2: currentNumber, result: result})
         currentNumber = NaN
         currentSign = '='
+        savedNumber = result
+        display.textContent = result
+    } else if (currentSign === '=') {
+        console.log(savedNumber, history.at(-1)["sign"], history.at(-1)["num2"], operate(savedNumber, history.at(-1)["num2"], history.at(-1)["sign"]))
+        result = operate(savedNumber, history.at(-1)["num2"], history.at(-1)["sign"])
+        history.push({num1: savedNumber, sign: history.at(-1)["sign"], num2: history.at(-1)["num2"], result: result})
+        savedNumber = result
         display.textContent = result
     }
 })
@@ -107,5 +117,28 @@ point.addEventListener('click', () => {
         display.textContent += '.'
         currentNumber = +display.textContent
     }
-    
+})
+
+back.addEventListener('click', () => {
+    currentNumber = history.at(-2)["result"], savedNumber = NaN, currentSign = ''
+    display.textContent = history.at(-2)["result"]
+})
+
+display.addEventListener('keydown', (event) => {
+    if ('0123456789'.includes(event.key)) {
+        currentNumber = +display.textContent +event.key
+        if (currentSign === '=') {
+            savedNumber = NaN
+        }
+        if (display.textContent[0] === '0') {
+            display.textContent = display.textContent.slice(1)
+        }
+    } else if (event.key === 'Backspace') {
+        currentNumber = +display.textContent.slice(0, -1)
+        if (currentSign === '=') {
+            savedNumber = NaN
+        }
+    } else {
+        event.preventDefault()
+    }
 })
